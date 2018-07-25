@@ -112,7 +112,7 @@ class Game
                     if(garde != null)
                     {
                         ret = ret + "ATTACK " + c.instanceId + " " + garde.instanceId + ";";
-                        if(garde.myHealthChange - c.attack <= 0)
+                        if(garde.opponentHealthChange + c.attack >= garde.defense)
                         {
                             sonPlateau.Remove(garde);
                         }
@@ -123,7 +123,7 @@ class Game
                         if(monster != null)
                         {
                             ret = ret + "ATTACK " + c.instanceId + " " + monster.instanceId + ";";
-                            if(monster.myHealthChange - c.attack <= 0)
+                            if(monster.opponentHealthChange + c.attack >= monster.defense)
                             {
                                 sonPlateau.Remove(monster);
                             }
