@@ -91,7 +91,9 @@ class Game
             var deck = deckGlobal.Where(d => d.cardType.Equals(0)).ToList();
 
             if (nbTour < 30)
+            {
                 Console.WriteLine("PASS");
+            }
             else
             {
                 string ret = string.Empty;
