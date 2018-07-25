@@ -90,7 +90,8 @@ class Game
                         break;
                 }
             }
-            
+            deck = deck.OrderByDescending(d => d.attack).ToList();
+
             if (nbTour < 30)
                 Console.WriteLine("PASS");
             else
