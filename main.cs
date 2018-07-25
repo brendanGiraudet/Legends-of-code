@@ -49,7 +49,7 @@ class Game
                     };
                 }
             }
-            List<Card> deck = new List<Card>();
+            List<Card> deckGlobal = new List<Card>();
             List<Card> monPlateau = new List<Card>();
             List<Card> sonPlateau = new List<Card>();
 
@@ -76,7 +76,7 @@ class Game
                 switch (card.location)
                 {
                     case 0:
-                        deck.Add(card);
+                        deckGlobal.Add(card);
                         break;
                     case 1:
                         monPlateau.Add(card);
@@ -88,6 +88,7 @@ class Game
                         break;
                 }
             }
+            var deck = deckGlobal.Where(d => d.cardType.Equals(0)).ToList();
 
             if (nbTour < 30)
                 Console.WriteLine("PASS");
@@ -102,6 +103,7 @@ class Game
                     if (card != null)
                     {
                         ret = ret + "SUMMON " + card.instanceId + ";";
+                        deck.Remove(card);
                         if (card.abilities.Contains("C"))
                         {
                             monPlateau.Add(card);
