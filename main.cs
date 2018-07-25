@@ -96,7 +96,10 @@ class Game
             else
             {
                 string ret = string.Empty;
-                Card card = deck.FirstOrDefault(c => c.cost <= moi.mana);
+                var card = deck.FirstOrDefault(c => c.abilities.Contains("G") && c.cost <= moi.mana);
+                if(card == null)
+                    card = deck.FirstOrDefault(c => c.cost <= moi.mana);
+                    
                 if (card != null)
                 {
                     ret = "SUMMON " + card.instanceId + ";";
