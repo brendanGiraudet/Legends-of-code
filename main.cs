@@ -98,11 +98,20 @@ class Game
                 string ret = string.Empty;
                 Card card = deck.FirstOrDefault(c => c.cost <= moi.mana);
                 if (card != null)
-                    ret = "SUMMON " + card.instanceId + ";";
+                    ret = "SUMMON " + card.instanceId + ";"; 
 
                 foreach (var c in monPlateau)
                 {
-                    ret = ret + "ATTACK " + c.instanceId + " -1;";
+                    var monster = sonPlateau.FirstOrDefault( m => m.defense < c.attack);
+                    if(monster != null)
+                    {
+                        ret = ret + "ATTACK " + c.instanceId + " " + monster.instanceId;
+                    }
+                    else
+                    {
+                        ret = ret + "ATTACK " + c.instanceId + " -1;";
+                    }
+                    
                 }
 
                 if (string.IsNullOrEmpty(ret))
