@@ -32,7 +32,6 @@ class Game
         string[] inputs;
         int nbTour = 0;
 
-        // game loop
         while (true)
         {
             Player moi = null;
@@ -59,7 +58,6 @@ class Game
             for (int i = 0; i < cardCount; i++)
             {
                 inputs = Console.ReadLine().Split(' ');
-
                 Card card = new Card
                 {
                     ID = int.Parse(inputs[0]),
@@ -90,48 +88,50 @@ class Game
                         break;
                 }
             }
-            deck = deck.OrderByDescending(d => d.attack).ToList();
 
             if (nbTour < 30)
                 Console.WriteLine("PASS");
             else
             {
                 string ret = string.Empty;
-                var card = deck.FirstOrDefault(c => c.abilities.Contains("G") && c.cost <= moi.mana);
-
-                if(card == null)
-                    card = deck.FirstOrDefault(c => c.cost <= moi.mana && c.abilities.Contains("C"));
-                    
-                if(card == null)
-                    card = deck.FirstOrDefault(c => c.cost <= moi.mana);
-
-                if (card != null)
+                int nbCreature = monPlateau.Count();
+                
+                while (moi.mana > 0 && nbCreature < 6)
                 {
-                    ret = "SUMMON " + card.instanceId + ";";
-                    if(card.abilities.Contains("C"))
+                    Card card = deck.FirstOrDefault(c => c.cost <= moi.mana);
+                    if (card != null)
                     {
-                        monPlateau.Add(card);
+                        ret = ret + "SUMMON " + card.instanceId + ";";
+                        if (card.abilities.Contains("C"))
+                        {
+                            monPlateau.Add(card);
+                        }
+                        moi.mana = moi.mana - card.cost;
+                        nbCreature++;
+                    } else
+                    {
+                        break;
                     }
                 }
 
                 foreach (var c in monPlateau)
                 {
                     var garde = sonPlateau.FirstOrDefault(g => g.abilities.Contains("G"));
-                    if(garde != null)
+                    if (garde != null)
                     {
                         ret = ret + "ATTACK " + c.instanceId + " " + garde.instanceId + ";";
-                        if(garde.opponentHealthChange + c.attack >= garde.defense)
+                        if (garde.opponentHealthChange + c.attack >= garde.defense)
                         {
                             sonPlateau.Remove(garde);
                         }
-                    } 
+                    }
                     else
                     {
-                        var monster = sonPlateau.FirstOrDefault( m => m.defense < c.attack);
-                        if(monster != null)
+                        var monster = sonPlateau.FirstOrDefault(m => m.defense < c.attack);
+                        if (monster != null)
                         {
                             ret = ret + "ATTACK " + c.instanceId + " " + monster.instanceId + ";";
-                            if(monster.opponentHealthChange + c.attack >= monster.defense)
+                            if (monster.opponentHealthChange + c.attack >= monster.defense)
                             {
                                 sonPlateau.Remove(monster);
                             }
@@ -147,7 +147,6 @@ class Game
                     Console.WriteLine("PASS");
                 else
                     Console.WriteLine(ret);
-
             }
             nbTour++;
         }
