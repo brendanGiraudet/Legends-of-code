@@ -99,7 +99,7 @@ class Game
                 var card = deck.FirstOrDefault(c => c.abilities.Contains("G") && c.cost <= moi.mana);
 
                 if(card == null)
-                    card = deck.FirstOrDefault(c => c.cost <= moi.mana && c.abilities("C"));
+                    card = deck.FirstOrDefault(c => c.cost <= moi.mana && c.abilities.Contains("C"));
                     
                 if(card == null)
                     card = deck.FirstOrDefault(c => c.cost <= moi.mana);
