@@ -102,16 +102,23 @@ class Game
 
                 foreach (var c in monPlateau)
                 {
-                    var monster = sonPlateau.FirstOrDefault( m => m.defense < c.attack);
-                    if(monster != null)
+                    var garde = sonPlateau.FirstOrDefault(g => g.abilities.Contains("G"));
+                    if(garde != null)
                     {
-                        ret = ret + "ATTACK " + c.instanceId + " " + monster.instanceId;
-                    }
+                        ret = ret + "ATTACK " + c.instanceId + " " + garde.instanceId + ";";
+                    } 
                     else
                     {
-                        ret = ret + "ATTACK " + c.instanceId + " -1;";
+                        var monster = sonPlateau.FirstOrDefault( m => m.defense < c.attack);
+                        if(monster != null)
+                        {
+                            ret = ret + "ATTACK " + c.instanceId + " " + monster.instanceId + ";";
+                        }
+                        else
+                        {
+                            ret = ret + "ATTACK " + c.instanceId + " -1;";
+                        }
                     }
-                    
                 }
 
                 if (string.IsNullOrEmpty(ret))
