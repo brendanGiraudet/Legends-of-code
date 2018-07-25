@@ -98,7 +98,13 @@ class Game
                 string ret = string.Empty;
                 Card card = deck.FirstOrDefault(c => c.cost <= moi.mana);
                 if (card != null)
-                    ret = "SUMMON " + card.instanceId + ";"; 
+                {
+                    ret = "SUMMON " + card.instanceId + ";";
+                    if(card.abilities.Contains("C"))
+                    {
+                        monPlateau.Add(card);
+                    }
+                }
 
                 foreach (var c in monPlateau)
                 {
@@ -106,6 +112,10 @@ class Game
                     if(garde != null)
                     {
                         ret = ret + "ATTACK " + c.instanceId + " " + garde.instanceId + ";";
+                        if(garde.myHealthChange - c.attack <= 0)
+                        {
+                            sonPlateau.Remove(garde);
+                        }
                     } 
                     else
                     {
@@ -113,6 +123,10 @@ class Game
                         if(monster != null)
                         {
                             ret = ret + "ATTACK " + c.instanceId + " " + monster.instanceId + ";";
+                            if(monster.myHealthChange - c.attack <= 0)
+                            {
+                                sonPlateau.Remove(monster);
+                            }
                         }
                         else
                         {
