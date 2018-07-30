@@ -15,6 +15,19 @@ public class Card
     public int myHealthChange { get; set; }
     public int opponentHealthChange { get; set; }
     public int cardDraw { get; set; }
+    public int draftOrder { get; set; }
+
+    public override string ToString()
+    {
+        return "ID :" +  ID +
+        " instanceId :" + instanceId +
+        " loc :" + location +
+        " type : " + cardType + 
+        " cost :" + cost + 
+        " attack :" + attack +
+        " def :" + defense + 
+        " abilities :" + abilities;
+    }
 }
 
 public class Player
@@ -70,7 +83,8 @@ class Game
                     abilities = inputs[7],
                     myHealthChange = int.Parse(inputs[8]),
                     opponentHealthChange = int.Parse(inputs[9]),
-                    cardDraw = int.Parse(inputs[10])
+                    cardDraw = int.Parse(inputs[10]),
+                    draftOrder = i
                 };
 
                 switch (card.location)
@@ -92,7 +106,14 @@ class Game
 
             if (nbTour < 30)
             {
-                Console.WriteLine("PASS");
+                deck = deck.OrderByDescending(d => (d.attack + d.defense) - d.cost).ToList();
+                var monster = deck.FirstOrDefault(g => g.abilities.Contains("G"));
+                if(monster == null )
+                {
+                    monster = deck.FirstOrDefault();
+                }
+                System.Console.Error.WriteLine(monster);
+                System.Console.WriteLine("PICK " + monster.draftOrder);
             }
             else
             {
@@ -124,7 +145,7 @@ class Game
                     if (garde != null)
                     {
                         ret = ret + "ATTACK " + c.instanceId + " " + garde.instanceId + ";";
-                        if (garde.opponentHealthChange + c.attack >= garde.defense)
+                        if (garde.defense - c.attack <= 0)
                         {
                             sonPlateau.Remove(garde);
                         }
@@ -135,7 +156,7 @@ class Game
                         if (monster != null)
                         {
                             ret = ret + "ATTACK " + c.instanceId + " " + monster.instanceId + ";";
-                            if (monster.opponentHealthChange + c.attack >= monster.defense)
+                            if (monster.defense - c.attack <= 0)
                             {
                                 sonPlateau.Remove(monster);
                             }
