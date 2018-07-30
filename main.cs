@@ -17,6 +17,36 @@ public class Card
     public int cardDraw { get; set; }
     public int draftOrder { get; set; }
 
+    public int AbilitiesValue()
+    {
+        var ret = 0;
+        if(this.abilities.Contains("G"))
+        {
+            ret++;
+        }
+        if(this.abilities.Contains("C"))
+        {
+            ret++;
+        }
+        if(this.abilities.Contains("L"))
+        {
+            ret++;
+        }
+        if(this.abilities.Contains("D"))
+        {
+            ret++;
+        }
+        if(this.abilities.Contains("B"))
+        {
+            ret++;
+        }
+        if(this.abilities.Contains("W"))
+        {
+            ret++;
+        }
+        return ret;
+    }
+
     public override string ToString()
     {
         return "ID :" +  ID +
@@ -102,16 +132,12 @@ class Game
                         break;
                 }
             }
-            var deck = deckGlobal.Where(d => d.cardType.Equals(0)).ToList();
+
+            var deck = deckGlobal.OrderByDescending(d => (d.attack + d.defense + d.AbilitiesValue()) - d.cost).ThenBy( t => t.cost).ToList();
 
             if (nbTour < 30)
-            {
-                deck = deck.OrderByDescending(d => (d.attack + d.defense) - d.cost).ToList();
-                var monster = deck.FirstOrDefault(g => g.abilities.Contains("G"));
-                if(monster == null )
-                {
-                    monster = deck.FirstOrDefault();
-                }
+            {    
+                var monster = deck.FirstOrDefault(d => d.cardType.Equals(0));
                 System.Console.Error.WriteLine(monster);
                 System.Console.WriteLine("PICK " + monster.draftOrder);
             }
