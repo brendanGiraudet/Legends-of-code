@@ -151,7 +151,7 @@ class Game
                 string ret = string.Empty;
                 int nbCreature = monPlateau.Count();
                 
-                while (moi.mana > 0 && nbCreature < 6)
+                while (moi.mana > 0)
                 {
                     // si possible d'utiliser carte
                     var card = deck.FirstOrDefault(c => c.cost <= moi.mana && !c.cardType.Equals(0) && sonPlateau.Count() != 0);
@@ -177,7 +177,7 @@ class Game
                     else
                     {
                         card = deck.FirstOrDefault(c => c.cost <= moi.mana && c.cardType.Equals(0));
-                        if (card != null)
+                        if (card != null && nbCreature < 6)
                         {
                             ret = ret + "SUMMON " + card.instanceId + ";";
                             if (card.abilities.Contains("C"))
