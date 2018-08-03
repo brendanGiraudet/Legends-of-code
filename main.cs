@@ -22,15 +22,15 @@ public class Card
         var ret = 0;
         if(this.abilities.Contains("G"))
         {
-            ret++;
+            ret += 4;
         }
         if(this.abilities.Contains("C"))
         {
-            ret++;
+            ret += 3;
         }
         if(this.abilities.Contains("L"))
         {
-            ret++;
+            ret += 2;
         }
         if(this.abilities.Contains("D"))
         {
@@ -137,9 +137,14 @@ class Game
 
             if (nbTour < 30)
             {    
-                var monster = deck.FirstOrDefault(d => d.cardType.Equals(0));
-                System.Console.Error.WriteLine(monster);
-                System.Console.WriteLine("PICK " + monster.draftOrder);
+                var card = deck.FirstOrDefault(d => d.cardType.Equals(0) && d.opponentHealthChange <= 0);
+                if(card == null)
+                {
+                    card = deck.FirstOrDefault();
+                }
+                System.Console.Error.WriteLine(card);
+
+                System.Console.WriteLine("PICK " + card.draftOrder);
             }
             else
             {
@@ -148,20 +153,44 @@ class Game
                 
                 while (moi.mana > 0 && nbCreature < 6)
                 {
-                    Card card = deck.FirstOrDefault(c => c.cost <= moi.mana);
-                    if (card != null)
+                    // si possible d'utiliser carte
+                    var card = deck.FirstOrDefault(c => c.cost <= moi.mana && !c.cardType.Equals(0) && sonPlateau.Count() != 0);
+                    if(card != null)
                     {
-                        ret = ret + "SUMMON " + card.instanceId + ";";
-                        deck.Remove(card);
-                        if (card.abilities.Contains("C"))
+                        //vert cible creature actif
+                        // rouge creature adv
+                        // soit creature adv soit adv
+                        switch (card.cardType)
                         {
-                            monPlateau.Add(card);
+                            case 1:// vert
+                                ret = ret + "USE " + card.instanceId + " -1;";    
+                            break;
+                            case 2:case 3:
+                                var monster = sonPlateau.FirstOrDefault();
+                                ret = ret + "USE " + card.instanceId + " " + monster.instanceId + " ;";
+                            break;
+                            default:
+                            break;
                         }
-                        moi.mana = moi.mana - card.cost;
-                        nbCreature++;
-                    } else
+                        deck.Remove(card);
+                    }
+                    else
                     {
-                        break;
+                        card = deck.FirstOrDefault(c => c.cost <= moi.mana && c.cardType.Equals(0));
+                        if (card != null)
+                        {
+                            ret = ret + "SUMMON " + card.instanceId + ";";
+                            if (card.abilities.Contains("C"))
+                            {
+                                monPlateau.Add(card);
+                            }
+                            moi.mana -= card.cost;
+                            nbCreature++;
+                            deck.Remove(card);
+                        } else
+                        {
+                            break;
+                        }
                     }
                 }
 
